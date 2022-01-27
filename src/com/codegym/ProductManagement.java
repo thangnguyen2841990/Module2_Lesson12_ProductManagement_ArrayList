@@ -1,97 +1,73 @@
 package com.codegym;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Scanner;
+import java.io.*;
+import java.util.*;
 
 import static java.util.Collections.sort;
 
 public class ProductManagement {
-    Scanner scanner = new Scanner(System.in);
-    private ArrayList<Product> products = new ArrayList<>();
+    private Map<String, Product> products = new HashMap<>();
 
-    public ProductManagement(ArrayList<Product> products) {
+    public ProductManagement(Map<String, Product> products) {
         this.products = products;
     }
 
     public ProductManagement() {
+
     }
 
-    public ArrayList<Product> getProducts() {
+    public Map<String, Product> getProducts() {
         return products;
     }
 
-    public void setProducts(ArrayList<Product> products) {
+    public void setProducts(Map<String, Product> products) {
         this.products = products;
     }
 
-    public void displayAllProducts() {
-        for (int i = 0; i < products.size(); i++) {
-            System.out.println((i + 1) + ". " + products.get(i));
+    // Thêm sản phẩm mới
+    public void addProduct(String id, Product product) {
+        products.put(id, product);
+    }
+    // Xóa sản phẩm
+    public void removeProduct(String id) {
+        products.remove(id);
+    }
+    //Cập nhật sản phẩm
+    public void updateProduct(String id,Product newProduct){
+        products.replace(id, newProduct);
+    }
+    //Kiểm tra ID có trong Map không
+    public boolean findID(String id){
+        if (products.containsKey(id)){
+            return true;
+        } else {
+            return false;
         }
     }
-
-    public void addNewProduct(Product newProduct) {
-        products.add(newProduct);
+    //Tìm sản phẩm theo ID
+    public Product findProductById(String id){
+        return this.products.get(id);
     }
-
-    public int findIdProduct(int id) {
-        int index = -1;
-        for (int i = 0; i < products.size(); i++) {
-            if (products.get(i).getId() == id) {
-                index = i;
-            }
+    //Hiển thị toàn bộ sản phẩm
+    public void displayAllProduct(){
+        Set<Map.Entry<String, Product>> products1 = this.products.entrySet();
+        for (Map.Entry<String, Product> product :products1) {
+            System.out.println(product);
         }
-        return index;
+    }
+    //sắp xếp sản phẩm
+    public void sortProductByPrice(){
+
     }
 
-    public void removeProduct(int index) {
-        products.remove(index);
+    public void writerToFile(Map<String,Product> products, String path) throws IOException {
+        OutputStream os = new FileOutputStream(path);
+        ObjectOutputStream oos = new ObjectOutputStream(os);
+        oos.writeObject(products);
     }
-
-    public void updateProduct(int index, Product newProduct) {
-        products.set(index, newProduct);
+    public void readerToFile(String path) throws IOException, ClassNotFoundException {
+        InputStream is = new FileInputStream(path);
+        ObjectInputStream ois = new ObjectInputStream(is);
+        this.products = (Map<String, Product>) ois.readObject();
     }
-
-    public int findNameProduct(String name) {
-        int index = -1;
-        for (int i = 0; i < products.size(); i++) {
-            if (products.get(i).getName().equals(name)) {
-                index = i;
-            }
-        }
-        return index;
-    }
-
-    public int getSizeProducts() {
-        return this.products.size();
-    }
-
-    public void menu() {
-        System.out.println("----MENU QUẢN LÝ SẢN PHẨM----");
-        System.out.println("1. Hiển thị toàn bộ sản phẩm.");
-        System.out.println("2. Thêm sản phẩm mới.");
-        System.out.println("3. Cập nhật sản phẩm theo ID.");
-        System.out.println("4, Xóa sản phảm theo ID.");
-        System.out.println("5. Tìm kiếm sản phẩm theo tên:. ");
-        System.out.println("6. Sắp xếp sản phẩm theo giá tăng dần.");
-        System.out.println("7. Thoát.");
-    }
-
-    public Product inputNewProduct() {
-        System.out.println("Nhập ID sản phẩm: ");
-        int id = scanner.nextInt();
-        scanner.nextLine();
-        System.out.println("Nhập tên sản phẩm: ");
-        String name = scanner.nextLine();
-        System.out.println("Nhập giá sản phẩm: ");
-        int price = scanner.nextInt();
-        return new Product(id, name, price);
-    }
-
-    public void sortProducts() {
-        Collections.sort(products);
-    }
-
-
 }
